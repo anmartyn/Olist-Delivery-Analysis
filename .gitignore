@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific files
+.idea/
+
+# Local databases and datasets
+*.sqlite
+*.sqlite3
+*.db
+*.csv
+
+# Power BI temporary files
+*.tmp
