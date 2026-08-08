@@ -3,9 +3,11 @@
 An end-to-end data analytics project based on the Brazilian Olist
 e-commerce dataset.
 
-The project investigates delivery performance, shipping delays, seller
-fulfilment, and the relationship between delivery experience and
-customer review scores.
+The project examines whether business growth is supported by reliable
+delivery operations and a consistent customer experience. It focuses on
+order and transaction growth, delivery reliability, fulfillment
+bottlenecks, customer satisfaction, seasonal demand pressure, and the
+potential relationship between delivery delays and repeat purchasing.
 
 The original SQLite data is migrated to PostgreSQL, validated, cleaned,
 and transformed before further analysis in SQL, Python, and Power BI.
@@ -14,13 +16,41 @@ and transformed before further analysis in SQL, Python, and Power BI.
 
 The main goals of the project are to:
 
-- evaluate delivery performance and identify late orders;
-- measure the main stages of the order delivery process;
-- investigate factors associated with shipping delays;
-- compare delivery outcomes across sellers, product categories, and
-  geographic regions;
-- analyze the relationship between delivery performance and customer
-  satisfaction.
+- evaluate business growth through order volume and transaction value;
+- measure delivery reliability and performance against promised delivery dates;
+- identify operational bottlenecks across seller processing and carrier transportation;
+- analyze how delivery delays are associated with customer satisfaction;
+- identify high-volume sellers, product categories, and geographic markets
+  with elevated delivery risk;
+- evaluate the effect of seasonal demand peaks on delivery performance
+  and customer experience;
+- investigate whether customers who experience late delivery are less
+  likely to make another purchase within a defined observation period.
+
+## Business Questions
+
+The analysis is structured around seven business questions:
+
+1. **Is Olist's order volume and transaction value growing over time, and
+   is delivery performance keeping pace with that growth?**
+
+2. **How reliably does Olist meet its promised delivery dates, and how
+   accurate are estimated delivery times?**
+
+3. **How strongly do delivery delays affect customer satisfaction, and at
+   what delay duration does customer sentiment deteriorate most sharply?**
+
+4. **Which stage of fulfillment contributes most to delivery problems:
+   seller processing or carrier transportation?**
+
+5. **Which high-volume sellers, product categories, and geographic markets
+   create the greatest combination of commercial importance and delivery risk?**
+
+6. **How do seasonal demand peaks affect delivery reliability and customer
+   satisfaction?**
+
+7. **Are customers who experience late delivery less likely to purchase
+   again within a defined observation window?**
 
 ## Technology Stack
 
@@ -38,9 +68,13 @@ The main goals of the project are to:
 4. Create a cleaned ZIP-code-level geolocation lookup.
 5. Add primary keys, foreign keys, constraints, and analytical indexes.
 6. Validate the transformed PostgreSQL schema.
-7. Perform delivery performance and customer satisfaction analysis.
-8. Create analytical views and a Power BI dashboard.
-9. Document findings and business recommendations.
+7. Define the analytical scope, grain, populations, and core delivery metrics.
+8. Create reusable analytical views for business analysis.
+9. Answer the business questions using SQL.
+10. Perform exploratory and business analysis in Python.
+11. Build Power BI dashboard covering business overview,
+    delivery performance, and customer satisfaction.
+12. Document key findings, limitations, and business recommendations.
 
 ## Data Quality Validation
 
@@ -86,8 +120,35 @@ The database preparation process is organized into sequential SQL scripts:
    queries.
 
 5. [`05_post_migration_validation.sql`](sql/05_post_migration_validation.sql)  
-   Validates the transformed schema and confirms that the migration and
-   constraint setup were completed correctly.
+   Validates the transformed schema and confirms that the migration,
+   cleaning, constraints, indexes, and referential integrity checks were
+   completed successfully.
+
+The next SQL stage will introduce reusable analytical views followed by
+business-analysis queries aligned with the seven project questions.
+
+## Data Understanding
+
+The first Python notebook,
+[`01_data_understanding.ipynb`](notebooks/01_data_understanding.ipynb),
+defines the analytical framework used throughout the rest of the project.
+
+It establishes:
+
+- the order-level grain used for core delivery KPIs;
+- one-to-many relationships that must be handled when joining order items,
+  sellers, products, and reviews;
+- the available observation period;
+- analytical populations for delivery and fulfillment-stage analysis;
+- review-score availability and review coverage;
+- treatment of products with missing category information;
+- consistent definitions for delivery time, seller processing time,
+  carrier delivery time, delay days, and late-delivery status.
+
+The main delivery-performance population contains 96,470 delivered
+orders with both actual and estimated delivery dates. A subset of 96,455
+orders contains the complete approval, carrier handoff, and customer
+delivery timeline required for fulfillment-stage analysis.
 
 ## Database Schema
 
@@ -104,10 +165,12 @@ for analytical queries.
 - [x] PostgreSQL data types standardized
 - [x] Clean ZIP-code geolocation lookup created
 - [x] Database constraints and indexes defined
-- [ ] Post-migration validation
-- [ ] Exploratory data analysis
-- [ ] Business analysis queries
+- [x] Post-migration validation completed
+- [x] Analytical scope and metric definitions established
+- [x] Business questions defined
 - [ ] Analytical views
+- [ ] Business analysis queries
+- [ ] Exploratory analysis in Python
 - [ ] Power BI dashboard
 - [ ] Final findings and recommendations
 
@@ -118,6 +181,7 @@ Olist-Delivery-Analysis/
 ├── images/
 │   └── database_schema.png
 ├── notebooks/
+│   └── 01_data_understanding.ipynb
 ├── powerbi/
 ├── sql/
 │   ├── 01_data_quality_checks.sql
